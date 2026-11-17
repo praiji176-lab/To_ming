@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Happy 23rd Birthday พี่หมิง 🎂💖</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Mali (น่ารักละมุน) & Kanit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&family=Mali:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Tone.js สำหรับเสียงเอฟเฟกต์น่ารักๆ -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <!-- Canvas Confetti สำหรับเอฟเฟกต์พลุและกระดาษสี -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        :root {
+            --pink-light: #fff0f6;
+            --pink-soft: #ffdeeb;
+            --pink-pastel: #faa2c1;
+            --pink-main: #f06595;
+            --pink-dark: #d6336c;
+        }
+
+        body {
+            font-family: 'Mali', 'Kanit', sans-serif;
+            background: linear-gradient(135deg, #fff0f6 0%, #ffe3ec 50%, #ffd8e8 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: #4a2535;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* พื้นหลังหัวใจลอยละมุนๆ */
+        .floating-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .floating-item {
+            position: absolute;
+            bottom: -50px;
+            animation: floatUp linear infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(0.8);
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.7;
+            }
+            80% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(-110vh) rotate(360deg) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        /* แอนิเมชันการเปลี่ยนด่าน */
+        .stage-card {
+            animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes popIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.9) translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* แอนิเมชันสั่นเมื่อตอบผิด */
+        .shake {
+            animation: shakeAnim 0.45s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes shakeAnim {
+            10%, 90% { transform: translate3d(-2px, 0, 0); }
+            20%, 80% { transform: translate3d(4px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+            40%, 60% { transform: translate3d(6px, 0, 0); }
+        }
+
+        /* --- ด่านที่ 1: ซองจดหมาย 3D --- */
+        .envelope-wrapper {
+            position: relative;
+            width: 290px;
+            height: 195px;
+            margin: 40px auto 20px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .envelope-wrapper:hover {
+            transform: translateY(-5px);
+        }
+
+        .envelope-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #f783ac;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(240, 101, 149, 0.25);
+        }
+
+        .letter-paper {
+            position: absolute;
+            left: 15px;
+            right: 15px;
+            bottom: 12px;
+            height: 170px;
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 18px 14px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), z-index 0.1s;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 2px dashed #ffc9c9;
+        }
+
+        .envelope-wrapper.open .letter-paper {
+            transform: translateY(-95px);
+            z-index: 5;
+        }
+
+        .envelope-front {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 145px solid #ff87b2;
+            border-right: 145px solid #ff9ec0;
+            border-bottom: 105px solid #faa2c1;
+            border-top: 90px solid transparent;
+            border-radius: 0 0 16px 16px;
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 145px solid transparent;
+            border-right: 145px solid transparent;
+            border-top: 112px solid #f06595;
+            border-radius: 16px 16px 0 0;
+            transform-origin: top;
+            transition: transform 0.6s ease, z-index 0.2s;
+            z-index: 4;
+            pointer-events: none;
+        }
+
+        .envelope-wrapper.open .envelope-flap {
+            transform: rotateX(180deg);
+            z-index: 1;
+        }
+
+        .heart-seal {
+            position: absolute;
+            top: 85px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 48px;
+            height: 48px;
+            background: #fff0f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(214, 51, 108, 0.3);
+            z-index: 5;
+            transition: all 0.4s ease;
+            animation: pulseHeart 1.5s infinite;
+        }
+
+        .envelope-wrapper.open .heart-seal {
+            opacity: 0;
+            transform: translateX(-50%) scale(0);
+        }
+
+        @keyframes pulseHeart {
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.12); }
+        }
+
+        /* --- ด่านที่ 3: แชท --- */
+        .chat-scroll::-webkit-scrollbar {
+            width: 5px;
+        }
+        .chat-scroll::-webkit-scrollbar-thumb {
+            background: #fcc2d7;
+            border-radius: 10px;
+        }
+        .typing-dot {
+            animation: typingBlink 1.4s infinite both;
+        }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typingBlink {
+            0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); }
+            40% { opacity: 1; transform: scale(1.1); }
+        }
+
+        /* --- ด่านที่ 7: เค้กวันเกิดและเปลวเทียน --- */
+        .flame {
+            animation: flicker 0.6s infinite alternate;
+            transform-origin: bottom center;
+        }
+
+        @keyframes flicker {
+            0% { transform: scale(1) rotate(-2deg); opacity: 0.95; }
+            50% { transform: scale(1.08) rotate(2deg); opacity: 1; }
+            100% { transform: scale(0.95) rotate(-1deg); opacity: 0.9; }
+        }
+
+        .smoke {
+            animation: smokeRise 1.8s ease-out forwards;
+        }
+
+        @keyframes smokeRise {
+            0% { opacity: 0.8; transform: translateY(0) scale(0.6); }
+            100% { opacity: 0; transform: translateY(-45px) scale(1.8); }
+        }
+
+        /* ปุ่มสไตล์น่ารัก */
+        .btn-cute {
+            background: linear-gradient(135deg, #f783ac 0%, #f06595 100%);
+            color: white;
+            box-shadow: 0 6px 18px rgba(240, 101, 149, 0.35);
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .btn-cute:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 22px rgba(240, 101, 149, 0.45);
+        }
+        .btn-cute:active {
+            transform: translateY(1px) scale(0.98);
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center p-4 sm:p-6 relative">
+
+    <!-- พื้นหลังหัวใจและประกายวิบวับ -->
+    <div id="floating-bg" class="floating-bg"></div>
+
+    <!-- แถบด้านบน: ตัวบอกด่านและปุ่มเปิด/ปิดเสียง -->
+    <header class="w-full max-w-md flex items-center justify-between mb-4 z-10 bg-white/75 backdrop-blur-md px-4 py-2.5 rounded-full shadow-sm border border-pink-100">
+        <div class="flex items-center gap-2">
+            <span class="text-lg">🐰</span>
+            <span id="stage-indicator" class="text-sm font-semibold text-pink-600">ด่านที่ 1 / 7</span>
+        </div>
+        
+        <!-- Progress bar เล็กๆ -->
+        <div class="flex-1 mx-3 bg-pink-100 h-2 rounded-full overflow-hidden">
+            <div id="progress-bar" class="bg-gradient-to-r from-pink-400 to-rose-500 h-full rounded-full transition-all duration-500" style="width: 14.28%"></div>
+        </div>
+
+        <button id="sound-toggle" onclick="toggleSound()" class="flex items-center gap-1 text-xs font-medium bg-pink-50 hover:bg-pink-100 text-pink-600 px-3 py-1.5 rounded-full border border-pink-200 transition">
+            <span id="sound-icon">🔊</span>
+            <span id="sound-text">เสียง: เปิด</span>
+        </button>
+    </header>
+
+    <!-- กล่องแสดงเนื้อหาหลักของแต่ละด่าน -->
+    <main id="app-container" class="w-full max-w-md z-10">
+        <!-- เนื้อหาจะถูก Render ด้วย JavaScript -->
+    </main>
+
+    <!-- กล่องแจ้งเตือนแบบน่ารัก (แทน alert) -->
+    <div id="toast-box" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-all duration-300 transform translate-y-4">
+        <div id="toast-content" class="bg-white/95 backdrop-blur-md text-pink-600 font-medium px-5 py-3 rounded-2xl shadow-xl border-2 border-pink-200 flex items-center gap-2 text-sm whitespace-nowrap">
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // 1. ระบบเสียงเอฟเฟกต์ด้วย Tone.js (ไม่ต้องใช้ไฟล์เสียงภายนอก)
+        // ==========================================
+        let soundEnabled = true;
+        let synth = null;
+
+        async function initAudio() {
+            if (!synth && typeof Tone !== 'undefined') {
+                await Tone.start();
+                synth = new Tone.PolySynth(Tone.Synth, {
+                    oscillator: { type: "sine" },
+                    envelope: { attack: 0.02, decay: 0.15, sustain: 0.1, release: 0.4 }
+                }).toDestination();
+                synth.volume.value = -8;
+            }
+        }
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            initAudio().then(() => {
+                if (!synth) return;
+                const now = Tone.now();
+                switch (type) {
+                    case 'pop':
+                        synth.triggerAttackRelease("C5", "16n", now);
+                        break;
+                    case 'tap':
+                        synth.triggerAttackRelease("G5", "32n", now);
+                        break;
+                    case 'success':
+                        synth.triggerAttackRelease(["C5", "E5", "G5"], "8n", now);
+                        synth.triggerAttackRelease("C6", "4n", now + 0.15);
+                        break;
+                    case 'error':
+                        synth.triggerAttackRelease("Eb3", "16n", now);
+                        synth.triggerAttackRelease("C3", "8n", now + 0.1);
+                        break;
+                    case 'open':
+                        synth.triggerAttackRelease("E5", "16n", now);
+                        synth.triggerAttackRelease("G5", "16n", now + 0.08);
+                        synth.triggerAttackRelease("B5", "8n", now + 0.16);
+                        break;
+                    case 'celebrate':
+                        const notes = ["C5", "E5", "G5", "C6", "E6", "G6"];
+                        notes.forEach((n, i) => synth.triggerAttackRelease(n, "8n", now + i * 0.08));
+                        break;
+                }
+            }).catch(() => {});
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('sound-icon').textContent = soundEnabled ? '🔊' : '🔇';
+            document.getElementById('sound-text').textContent = soundEnabled ? 'เสียง: เปิด' : 'เสียง: ปิด';
+            if (soundEnabled) playSound('pop');
+        }
+
+        // ==========================================
+        // 2. เอฟเฟกต์หัวใจลอยและแจ้งเตือน Toast
+        // ==========================================
+        function createFloatingHearts() {
+            const container = document.getElementById('floating-bg');
+            const icons = ['💖', '🌸', '✨', '💕', '🐰', '🎀', '💗'];
+            for (let i = 0; i < 18; i++) {
+                const el = document.createElement('div');
+                el.className = 'floating-item';
+                el.textContent = icons[Math.floor(Math.random() * icons.length)];
+                el.style.left = Math.random() * 100 + 'vw';
+                el.style.fontSize = (Math.random() * 14 + 14) + 'px';
+                el.style.animationDuration = (Math.random() * 8 + 7) + 's';
+                el.style.animationDelay = (Math.random() * 5) + 's';
+                container.appendChild(el);
+            }
+        }
+
+        let toastTimeout;
+        function showToast(msg) {
+            const box = document.getElementById('toast-box');
+            const content = document.getElementById('toast-content');
+            content.innerHTML = msg;
+            box.classList.remove('opacity-0', 'translate-y-4');
+            box.classList.add('opacity-100', 'translate-y-0');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                box.classList.add('opacity-0', 'translate-y-4');
+                box.classList.remove('opacity-100', 'translate-y-0');
+            }, 2400);
+        }
+
+        // ==========================================
+        // 3. สถานะของแอปและตัวจัดการด่านต่างๆ
+        // ==========================================
+        let currentStage = 1;
+        let passcodeInput = "";
+        let openEndedAnswer = "";
+
+        function goToStage(stageNum) {
+            playSound('pop');
+            currentStage = stageNum;
+            document.getElementById('stage-indicator').textContent = `ด่านที่ ${currentStage} / 7`;
+            document.getElementById('progress-bar').style.width = `${(currentStage / 7) * 100}%`;
+            renderStage();
+        }
+
+        function renderStage() {
+            const container = document.getElementById('app-container');
+            switch (currentStage) {
+                case 1: renderStage1(container); break;
+                case 2: renderStage2(container); break;
+                case 3: renderStage3(container); break;
+                case 4: renderStage4(container); break;
+                case 5: renderStage5(container); break;
+                case 6: renderStage6(container); break;
+                case 7: renderStage7(container); break;
+            }
+        }
+
+        // ------------------------------------------
+        // ด่านที่ 1: ซองจดหมายสีชมพูสุดน่ารัก
+        // ------------------------------------------
+        function renderStage1(container) {
+            container.innerHTML = `
+                <div class="stage-card bg-white/85 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-xl border-2 border-pink-100 text-center">
+                    <div class="inline-block bg-pink-100 text-pink-600 text-xs font-semibold px-3.5 py-1 rounded-full mb-2">
+                        💌 Special Delivery
+                    </div>
+                    <h1 class="text-xl sm:text-2xl font-bold text-pink-600 mb-1">มีจดหมายส่งถึงพี่หมิงค่ะ</h1>
+                    <p class="text-sm text-pink-400 mb-6">แตะที่หัวใจบนซองจดหมายเพื่อเปิดดูนะ</p>
+
+                    <div id="envelope" class="envelope-wrapper" onclick="openEnvelope()">
+                        <div class="envelope-back"></div>
+                        <div class="letter-paper">
+                            <span class="text-2xl mb-1">🐰💕</span>
+                            <p class="text-base sm:text-lg font-bold text-pink-600 leading-snug">
+                                "มีอะไรจะบอกด้วยแหละ"
+                            </p>
+                            <span class="text-xs text-pink-400 mt-1">กดปุ่มด้านล่างเพื่อไปต่อเลย~</span>
+                        </div>
+                        <div class="envelope-front"></div>
+                        <div class="envelope-flap"></div>
+                        <div class="heart-seal">💖</div>
+                    </div>
+
+                    <div id="stage1-next" class="mt-8 opacity-0 pointer-events-none transition-all duration-500 transform translate-y-3">
+                        <button onclick="goToStage(2)" class="btn-cute w-full py-3.5 rounded-2xl font-bold text-base flex items-center justify-center gap-2">
+                            <span>เปิดอ่านต่อเลย</span>
+                            <span>✨</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function openEnvelope() {
+            const env = document.getElementById('envelope');
+            if (!env.classList.contains('open')) {
+                playSound('open');
+                env.classList.add('open');
+                setTimeout(() => {
+                    const nextBtn = document.getElementById('stage1-next');
+                    nextBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-3');
+                }, 550);
+            }
+        }
+
+        // ------------------------------------------
+        // ด่านที่ 2: ด่านรหัสลับ (010169 / คำใบ้ 13:32)
+        // ------------------------------------------
+        function renderStage2(container) {
+            passcodeInput = "";
+            container.innerHTML = `
+                <div id="passcode-card" class="stage-card bg-white/85 backdrop-blur-md rounded-3xl p-6 sm:p-7 shadow-xl border-2 border-pink-100 text-center">
+                    <div class="w-14 h-14 bg-pink-100 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-3 shadow-inner">
+                        🔐
+                    </div>
+                    <h2 class="text-xl font-bold text-pink-600 mb-1">ใส่รหัสลับปลดล็อก</h2>
+                    <div class="inline-flex items-center gap-1.5 bg-rose-50 border border-rose-200 text-rose-500 text-sm font-semibold px-4 py-1.5 rounded-full mb-5">
+                        <span>💡</span>
+                        <span>คำใบ้: 13:32</span>
+                    </div>
+
+                    <!-- ช่องแสดงรหัส 6 หลัก -->
+                    <div class="flex justify-center gap-2 sm:gap-2.5 mb-6" id="pin-display">
+                        ${Array(6).fill(0).map((_, i) => `
+                            <div id="pin-box-${i}" class="w-10 h-12 sm:w-11 sm:h-13 rounded-xl border-2 border-pink-200 bg-pink-50/70 flex items-center justify-center text-xl font-bold text-pink-600 transition-all">
+                                •
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <!-- แป้นตัวเลข -->
+                    <div class="grid grid-cols-3 gap-2.5 max-w-[260px] mx-auto">
+                        ${[1,2,3,4,5,6,7,8,9].map(num => `
+                            <button onclick="pressKey('${num}')" class="h-13 py-3 rounded-2xl bg-white hover:bg-pink-50 active:bg-pink-100 border border-pink-100 shadow-sm text-lg font-bold text-pink-600 transition transform active:scale-95">
+                                ${num}
+                            </button>
+                        `).join('')}
+                        <button onclick="clearPin()" class="py-3 rounded-2xl bg-pink-50 hover:bg-pink-100 text-xs font-semibold text-pink-500 transition active:scale-95">
+                            ล้าง
+                        </button>
+                        <button onclick="pressKey('0')" class="py-3 rounded-2xl bg-white hover:bg-pink-50 active:bg-pink-100 border border-pink-100 shadow-sm text-lg font-bold text-pink-600 transition transform active:scale-95">
+                            0
+                        </button>
+                        <button onclick="deletePin()" class="py-3 rounded-2xl bg-pink-50 hover:bg-pink-100 text-base font-bold text-pink-500 transition active:scale-95">
+                            ⌫
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updatePinUI() {
+            for (let i = 0; i < 6; i++) {
+                const box = document.getElementById(`pin-box-${i}`);
+                if (i < passcodeInput.length) {
+                    box.textContent = passcodeInput[i];
+                    box.classList.add('border-pink-500', 'bg-white', 'scale-105');
+                } else {
+                    box.textContent = '•';
+                    box.classList.remove('border-pink-500', 'bg-white', 'scale-105');
+                }
+            }
+        }
+
+        function pressKey(num) {
+            if (passcodeInput.length >= 6) return;
+            playSound('tap');
+            passcodeInput += num;
+            updatePinUI();
+
+            if (passcodeInput.length === 6) {
+                setTimeout(checkPasscode, 220);
+            }
+        }
+
+        function deletePin() {
+            if (passcodeInput.length > 0) {
+                playSound('tap');
+                passcodeInput = passcodeInput.slice(0, -1);
+                updatePinUI();
+            }
+        }
+
+        function clearPin() {
+            playSound('tap');
+            passcodeInput = "";
+            updatePinUI();
+        }
+
+        function checkPasscode() {
+            if (passcodeInput === "010169") {
+                playSound('success');
+                showToast('🎉 เย้! รหัสถูกต้อง เก่งมากเลยค่ะ');
+                setTimeout(() => goToStage(3), 900);
+            } else {
+                playSound('error');
+                const card = document.getElementById('passcode-card');
+                card.classList.remove('shake');
+                void card.offsetWidth;
+                card.classList.add('shake');
+                showToast('🥺 อุ๊ย รหัสยังไม่ถูกน้า ลองดูคำใบ้อีกทีสิ');
+                setTimeout(() => {
+                    passcodeInput = "";
+                    updatePinUI();
+                }, 400);
+            }
+        }
+
+        // ------------------------------------------
+        // ด่านที่ 3: แชทจำลองให้เลือกตอบ
+        // ------------------------------------------
+        let chatStep = 0;
+
+        function renderStage3(container) {
+            chatStep = 0;
+            container.innerHTML = `
+                <div class="stage-card bg-white/95 backdrop-blur-md rounded-3xl shadow-xl border-2 border-pink-100 overflow-hidden flex flex-col h-[520px]">
+                    <!-- หัวแชท -->
+                    <div class="bg-gradient-to-r from-pink-400 to-rose-400 text-white px-4 py-3.5 flex items-center gap-3 shadow-sm">
+                        <div class="relative">
+                            <div class="w-11 h-11 rounded-full bg-white flex items-center justify-center text-2xl shadow-sm border-2 border-pink-200">
+                                🐰
+                            </div>
+                            <span class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-400 border-2 border-white rounded-full"></span>
+                        </div>
+                        <div class="text-left flex-1 min-w-0">
+                            <h3 class="font-bold text-sm sm:text-base truncate">、เขาเรียกหนูว่าคุณกาตุ่ย  𐙚 ˖ི</h3>
+                            <p class="text-xs text-pink-100 flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-300 inline-block"></span>
+                                กำลังใช้งานอยู่
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- พื้นที่ข้อความแชท -->
+                    <div id="chat-messages" class="flex-1 p-4 overflow-y-auto chat-scroll space-y-3 bg-pink-50/40">
+                    </div>
+
+                    <!-- พื้นที่ตัวเลือกตอบกลับด้านล่าง -->
+                    <div id="chat-options" class="p-3.5 bg-white border-t border-pink-100 min-h-[115px] flex flex-col justify-center">
+                    </div>
+                </div>
+            `;
+
+            // เริ่มบทสนทนาที่ 1
+            setTimeout(() => {
+                appendLeftMessage("❤️", () => {
+                    showChatOptions([
+                        { text: "ใครหรอครับ", reply: "งะ😭 จำกันไม่ได้แล้ว" },
+                        { text: "Happy new year", reply: "Happy new year🎉" },
+                        { text: "สวัสดีครับ", reply: "หวัดดีค้าบบบ" }
+                    ], 1);
+                });
+            }, 400);
+        }
+
+        function appendLeftMessage(text, callback) {
+            const box = document.getElementById('chat-messages');
+            if (!box) return;
+
+            // แสดงกำลังพิมพ์...
+            const typingId = 'typing-' + Date.now();
+            const typingHTML = `
+                <div id="${typingId}" class="flex items-end gap-2">
+                    <div class="w-8 h-8 rounded-full bg-pink-100 flex items-center justify-center text-sm shrink-0">🐰</div>
+                    <div class="bg-white border border-pink-100 px-4 py-2.5 rounded-2xl rounded-bl-sm shadow-sm flex gap-1">
+                        <span class="w-2 h-2 bg-pink-400 rounded-full typing-dot"></span>
+                        <span class="w-2 h-2 bg-pink-400 rounded-full typing-dot"></span>
+                        <span class="w-2 h-2 bg-pink-400 rounded-full typing-dot"></span>
+                    </div>
+                </div>
+            `;
+            box.insertAdjacentHTML('beforeend', typingHTML);
+            box.scrollTop = box.scrollHeight;
+
+            setTimeout(() => {
+                const typingEl = document.getElementById(typingId);
+                if (typingEl) typingEl.remove();
+
+                playSound('pop');
+                const msgHTML = `
+                    <div class="flex items-end gap-2 animate-[popIn_0.3s_ease]">
+                        <div class="w-8 h-8 rounded-full bg-pink-100 flex items-center justify-center text-sm shrink-0 shadow-sm">🐰</div>
+                        <div class="bg-white border border-pink-100 text-gray-700 px-4 py-2.5 rounded-2xl rounded-bl-sm shadow-sm max-w-[75%] text-sm sm:text-base text-left">
+                            ${text}
+                        </div>
+                    </div>
+                `;
+                box.insertAdjacentHTML('beforeend', msgHTML);
+                box.scrollTop = box.scrollHeight;
+                if (callback) callback();
+            }, 750);
+        }
+
+        function appendRightMessage(text) {
+            const box = document.getElementById('chat-messages');
+            playSound('tap');
+            const msgHTML = `
+                <div class="flex justify-end animate-[popIn_0.3s_ease]">
+                    <div class="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-4 py-2.5 rounded-2xl rounded-br-sm shadow-sm max-w-[75%] text-sm sm:text-base text-left">
+                        ${text}
+                    </div>
+                </div>
+            `;
+            box.insertAdjacentHTML('beforeend', msgHTML);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function showChatOptions(options, step) {
+            const optBox = document.getElementById('chat-options');
+            if (!optBox) return;
+
+            optBox.innerHTML = `
+                <p class="text-[11px] text-pink-400 mb-2 text-center font-medium">เลือกข้อความเพื่อตอบกลับคุณกาตุ่ย 👇</p>
+                <div class="flex flex-col gap-2">
+                    ${options.map((opt, idx) => `
+                        <button onclick='handleChatChoice(${step}, ${JSON.stringify(opt)})' class="w-full py-2 px-4 rounded-xl bg-pink-50 hover:bg-pink-100 active:bg-pink-200 text-pink-600 font-medium text-sm border border-pink-200 transition text-center">
+                            ${opt.text}
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function handleChatChoice(step, option) {
+            const optBox = document.getElementById('chat-options');
+            optBox.innerHTML = `<p class="text-xs text-pink-300 text-center py-4">คุณกาตุ่ยกำลังพิมพ์...</p>`;
+            appendRightMessage(option.text);
+
+            if (step === 1) {
+                setTimeout(() => {
+                    appendLeftMessage(option.reply, () => {
+                        setTimeout(() => {
+                            appendLeftMessage("พี่หมิงว่างไหมคะ", () => {
+                                showChatOptions([
+                                    { text: "พี่ว่างเสมอ", reply: "มีอะไรให้ดูด้วยแหละ !" },
+                                    { text: "พี่จี้อยู่ค่ะ", reply: "เลิกจี้ก่อน !!! มีอะไรให้ดู" }
+                                ], 2);
+                            });
+                        }, 450);
+                    });
+                }, 400);
+            } else if (step === 2) {
+                setTimeout(() => {
+                    appendLeftMessage(option.reply, () => {
+                        showChatOptions([
+                            { text: "อะไรหรอคะ", reply: "ไม่บอกเดี๋ยวก็รู้ ^^" }
+                        ], 3);
+                    });
+                }, 400);
+            } else if (step === 3) {
+                setTimeout(() => {
+                    appendLeftMessage(option.reply, () => {
+                        optBox.innerHTML = `
+                            <button onclick="goToStage(4)" class="btn-cute w-full py-3 rounded-2xl font-bold text-sm sm:text-base flex items-center justify-center gap-2">
+                                <span>ไปดูกันเลย!</span>
+                                <span>👉💖</span>
+                            </button>
+                        `;
+                    });
+                }, 400);
+            }
+        }
+
+        // ------------------------------------------
+        // ด่านที่ 4: ควิซทายใจ (4 ข้อ)
+        // ------------------------------------------
+        const quizStage4Data = [
+            {
+                q: "จำได้ไหมคะวันนี้วันอะไร",
+                options: ["วันพฤหัสบดี", "วันๆหนึ่ง", "หืออ ?"],
+                correctIndex: "ANY", // เลือกอันไหนก็ได้ถูกหมด ไม่ขึ้นคำอธิบาย
+                instantNext: true
+            },
+            {
+                q: "ตอนนี้อายุเท่าไหร่แล้ว",
+                options: ["20", "23", "22"],
+                correctIndex: 1, // ต้องตอบ 23 เท่านั้น
+                instantNext: false
+            },
+            {
+                q: "คิดว่าตัวเองเป็นเด็กหรือผู้ใหญ่แล้วคะ",
+                options: [
+                    "ผู้ใหญ่เต็มตัว 💪🏻 (พร้อมปกป้องเจ้าหญิงตัวน้อย)",
+                    "โตแล้วครับ (อย่ามาดื้อกับพี่ !)",
+                    "เด็กน้อยของเค้าเสมอ (🥺)"
+                ],
+                correctIndex: "ANY",
+                instantNext: false
+            },
+            {
+                q: "ถ้าวันนี้มีคนเซอร์ไพรส์วันเกิด จะทำหน้ายังไง",
+                options: [
+                    "วันนี้วันเกิดหรอ?",
+                    "ยิ้ม / เขิน",
+                    "ทำเป็นนิ่ง แต่แอบดีใจมาก"
+                ],
+                correctIndex: "ANY",
+                instantNext: false
+            }
+        ];
+
+        let q4Index = 0;
+
+        function renderStage4(container) {
+            q4Index = 0;
+            renderQ4Question(container);
+        }
+
+        function renderQ4Question(container) {
+            if (q4Index >= quizStage4Data.length) {
+                playSound('celebrate');
+                container.innerHTML = `
+                    <div class="stage-card bg-white/90 backdrop-blur-md rounded-3xl p-7 shadow-xl border-2 border-pink-100 text-center">
+                        <div class="text-5xl mb-3 animate-bounce">🏆</div>
+                        <h2 class="text-2xl font-bold text-pink-600 mb-2">ตอบถูกทั้งหมดเลย 4 ข้อเก่งมาก 🎉</h2>
+                        <p class="text-sm text-pink-400 mb-6">สมกับเป็นพี่หมิงคนเก่งของหนูเลยค่ะ</p>
+                        <button onclick="goToStage(5)" class="btn-cute w-full py-3.5 rounded-2xl font-bold text-base">
+                            ไปด่านต่อไปกันเลย ✨
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            const item = quizStage4Data[q4Index];
+            container.innerHTML = `
+                <div id="q4-card" class="stage-card bg-white/90 backdrop-blur-md rounded-3xl p-6 sm:p-7 shadow-xl border-2 border-pink-100 text-center">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="bg-pink-100 text-pink-600 text-xs font-bold px-3 py-1 rounded-full">
+                            ควิซทายใจ • ข้อที่ ${q4Index + 1} / 4
+                        </span>
+                        <span class="text-lg">🐰💭</span>
+                    </div>
+
+                    <h2 class="text-lg sm:text-xl font-bold text-gray-800 mb-6 leading-relaxed">
+                        "${item.q}"
+                    </h2>
+
+                    <div class="space-y-3" id="q4-options">
+                        ${item.options.map((opt, idx) => `
+                            <button id="q4-btn-${idx}" onclick="answerQ4(${idx})" class="w-full py-3.5 px-4 rounded-2xl bg-pink-50/80 hover:bg-pink-100 border-2 border-pink-200 text-gray-700 font-semibold text-sm sm:text-base transition-all duration-200 text-center">
+                                ${idx + 1}) ${opt}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        let q4Locked = false;
+        function answerQ4(idx) {
+            if (q4Locked) return;
+            const item = quizStage4Data[q4Index];
+            const btn = document.getElementById(`q4-btn-${idx}`);
+
+            const isCorrect = (item.correctIndex === "ANY" || item.correctIndex === idx);
+
+            if (isCorrect) {
+                q4Locked = true;
+                playSound('success');
+                btn.classList.remove('bg-pink-50/80', 'border-pink-200', 'text-gray-700');
+                btn.classList.add('bg-emerald-500', 'border-emerald-600', 'text-white', 'scale-[1.02]', 'shadow-md');
+
+                const delay = item.instantNext ? 450 : 750;
+                setTimeout(() => {
+                    q4Index++;
+                    q4Locked = false;
+                    renderQ4Question(document.getElementById('app-container'));
+                }, delay);
+            } else {
+                playSound('error');
+                btn.classList.remove('bg-pink-50/80', 'border-pink-200', 'text-gray-700');
+                btn.classList.add('bg-rose-500', 'border-rose-600', 'text-white', 'shake');
+                showToast('🙈 เอ๊ะ! ลองนึกดูใหม่สิคะ อายุเท่าไหร่แล้วน้า~');
+                setTimeout(() => {
+                    btn.classList.remove('bg-rose-500', 'border-rose-600', 'text-white', 'shake');
+                    btn.classList.add('bg-pink-50/80', 'border-pink-200', 'text-gray-700');
+                }, 700);
+            }
+        }
+
+        // ------------------------------------------
+        // ด่านที่ 5: ควิซรอบสุดท้าย (กดอันไหนก็เขียวหมด)
+        // ------------------------------------------
+        const quizStage5Data = [
+            {
+                q: "ถ้าเป่าเทียนแล้วขอพรได้ 1 ข้อ จะขออะไร",
+                options: [
+                    "ขอให้รวย",
+                    "ขอให้สุขภาพแข็งแรง",
+                    "ขอให้แฟนรักขึ้น 300%",
+                    "ขอพรในใจ ไม่บอกหรอกนะ"
+                ]
+            },
+            {
+                q: "ถ้าเลือกได้ อยากให้วันเกิดปีหน้ามีอะไรเพิ่มเข้ามาคะ",
+                options: [
+                    "เงินในบัญชีเพิ่ม",
+                    "ความสำเร็จเพิ่ม",
+                    "จำนวนปีที่ได้อยู่ด้วยกันเพิ่ม"
+                ]
+            }
+        ];
+
+        let q5Index = 0;
+        let q5Locked = false;
+
+        function renderStage5(container) {
+            q5Index = 0;
+            renderQ5Question(container);
+        }
+
+        function renderQ5Question(container) {
+            if (q5Index >= quizStage5Data.length) {
+                goToStage(6);
+                return;
+            }
+
+            const item = quizStage5Data[q5Index];
+            container.innerHTML = `
+                <div class="stage-card bg-white/90 backdrop-blur-md rounded-3xl p-6 sm:p-7 shadow-xl border-2 border-pink-100 text-center">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="bg-rose-100 text-rose-600 text-xs font-bold px-3 py-1 rounded-full">
+                            ควิซรอบสุดท้าย • ข้อที่ ${q5Index + 1} / 2
+                        </span>
+                        <span class="text-lg">🕯️✨</span>
+                    </div>
+
+                    <h2 class="text-lg sm:text-xl font-bold text-gray-800 mb-6 leading-relaxed">
+                        "${item.q}"
+                    </h2>
+
+                    <div class="space-y-3">
+                        ${item.options.map((opt, idx) => `
+                            <button id="q5-btn-${idx}" onclick="answerQ5(${idx})" class="w-full py-3.5 px-4 rounded-2xl bg-pink-50/80 hover:bg-pink-100 border-2 border-pink-200 text-gray-700 font-semibold text-sm sm:text-base transition-all duration-200">
+                                ${idx + 1}) ${opt}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function answerQ5(idx) {
+            if (q5Locked) return;
+            q5Locked = true;
+            playSound('success');
+
+            const btn = document.getElementById(`q5-btn-${idx}`);
+            btn.classList.remove('bg-pink-50/80', 'border-pink-200', 'text-gray-700');
+            btn.classList.add('bg-emerald-500', 'border-emerald-600', 'text-white', 'scale-[1.02]', 'shadow-md');
+
+            setTimeout(() => {
+                q5Index++;
+                q5Locked = false;
+                renderQ5Question(document.getElementById('app-container'));
+            }, 750);
+        }
+
+        // ------------------------------------------
+        // ด่านที่ 6: คำถามปลายเปิด + แคปหน้าจอ
+        // ------------------------------------------
+        function renderStage6(container) {
+            container.innerHTML = `
+                <div class="stage-card bg-white/90 backdrop-blur-md rounded-3xl p-6 sm:p-7 shadow-xl border-2 border-pink-100 text-center">
+                    <div class="inline-block bg-pink-100 text-pink-600 text-xs font-bold px-3.5 py-1 rounded-full mb-3">
+                        ✍️ ความในใจของพี่หมิง
+                    </div>
+                    <h2 class="text-lg sm:text-xl font-bold text-gray-800 mb-2">
+                        "ปีนี้คิดว่าอะไรที่เป็นความสุขที่สุด"
+                    </h2>
+
+                    <!-- ป้ายเตือนน่ารักๆ เด่นชัด -->
+                    <div class="bg-amber-50 border-2 border-amber-200 text-amber-700 text-xs sm:text-sm font-bold px-4 py-2 rounded-2xl mb-4 inline-flex items-center gap-1.5 shadow-sm">
+                        <span>(อย่าลืมแคปไว้ด้วยนะ 📸)</span>
+                    </div>
+
+                    <div id="stage6-form">
+                        <textarea id="happiness-input" rows="4" placeholder="พิมพ์คำตอบของพี่หมิงตรงนี้ได้เลยค่ะ..." class="w-full p-4 rounded-2xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none bg-pink-50/40 text-gray-700 text-sm sm:text-base resize-none mb-4 transition"></textarea>
+                        
+                        <button onclick="submitHappiness()" class="btn-cute w-full py-3.5 rounded-2xl font-bold text-base">
+                            ส่งคำตอบ 💖
+                        </button>
+                    </div>
+
+                    <!-- การ์ดสรุปคำตอบให้แคปสวยๆ (ซ่อนไว้ก่อน) -->
+                    <div id="stage6-summary" class="hidden">
+                        <div class="bg-gradient-to-br from-pink-50 via-white to-rose-50 border-2 border-pink-300 rounded-2xl p-5 mb-5 shadow-inner relative">
+                            <div class="text-xs text-pink-400 font-semibold mb-1">ความสุขที่สุดในปีนี้ของพี่หมิง 🐰💕</div>
+                            <p id="saved-answer-text" class="text-base sm:text-lg font-bold text-pink-600 break-words leading-relaxed my-2"></p>
+                            <div class="text-[11px] text-rose-400 mt-2 font-medium">📸 แคปหน้าจอเก็บไว้ส่งให้หนูดูด้วยน้า!</div>
+                        </div>
+
+                        <button onclick="goToStage(7)" class="btn-cute w-full py-3.5 rounded-2xl font-bold text-base flex items-center justify-center gap-2">
+                            <span>ปลดล็อกเซอร์ไพรส์สุดท้าย</span>
+                            <span>🎂🎉</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function submitHappiness() {
+            const input = document.getElementById('happiness-input').value.trim();
+            if (!input) {
+                playSound('error');
+                showToast('🥺 พิมพ์อะไรสักหน่อยน้า หนูอยากอ่าน~');
+                return;
+            }
+            playSound('success');
+            openEndedAnswer = input;
+            document.getElementById('saved-answer-text').textContent = `"${openEndedAnswer}"`;
+            document.getElementById('stage6-form').classList.add('hidden');
+            document.getElementById('stage6-summary').classList.remove('hidden');
+            showToast('📸 อย่าลืมแคปหน้าจอเก็บไว้นะคะ!');
+        }
+
+        // ------------------------------------------
+        // ด่านที่ 7: ปลดล็อกเค้กวันเกิดครบรอบ 23 ปีของพี่หมิง
+        // ------------------------------------------
+        let candleBlown = false;
+
+        function renderStage7(container) {
+            candleBlown = false;
+            container.innerHTML = `
+                <div class="stage-card bg-white/90 backdrop-blur-md rounded-3xl p-5 sm:p-7 shadow-2xl border-2 border-pink-200 text-center">
+                    <div class="inline-block bg-gradient-to-r from-pink-500 to-rose-500 text-white text-xs font-bold px-4 py-1 rounded-full mb-2 shadow-sm">
+                        🎂 Happy 23rd Birthday P'Ming 🎂
+                    </div>
+                    <h2 class="text-xl sm:text-2xl font-bold text-pink-600 mb-1">สุขสันต์วันเกิดครบรอบ 23 ปี</h2>
+                    <p id="cake-instruction" class="text-xs sm:text-sm text-pink-400 mb-4">อธิษฐานแล้วกดปุ่มเป่าเทียน (หรือแตะที่ไฟเทียน) นะคะ ✨</p>
+
+                    <!-- SVG เค้กวันเกิดสุดน่ารักพร้อมเทียนเลข 23 -->
+                    <div class="relative w-60 h-56 mx-auto my-2 cursor-pointer select-none" onclick="blowCandle()">
+                        <svg viewBox="0 0 240 220" class="w-full h-full drop-shadow-md">
+                            <!-- จานรองเค้ก -->
+                            <ellipse cx="120" cy="195" rx="105" ry="16" fill="#ffe3ec" stroke="#faa2c1" stroke-width="2"/>
+                            
+                            <!-- ชั้นเค้กล่าง -->
+                            <rect x="35" y="135" width="170" height="55" rx="14" fill="#ffdeeb" stroke="#f783ac" stroke-width="2"/>
+                            <!-- ครีมหยดชั้นล่าง -->
+                            <path d="M35 148 Q50 162 65 148 Q80 162 95 148 Q110 162 125 148 Q140 162 155 148 Q170 162 185 148 Q195 158 205 148 L205 138 Q205 135 190 135 L50 135 Q35 135 35 138 Z" fill="#ffffff"/>
+                            
+                            <!-- ชั้นเค้กบน -->
+                            <rect x="55" y="90" width="130" height="48" rx="12" fill="#faa2c1" stroke="#f06595" stroke-width="2"/>
+                            <!-- ครีมหยดชั้นบน -->
+                            <path d="M55 102 Q68 115 81 102 Q94 115 107 102 Q120 115 133 102 Q146 115 159 102 Q172 115 185 102 L185 93 Q185 90 172 90 L68 90 Q55 90 55 93 Z" fill="#fff0f6"/>
+
+                            <!-- เม็ดเรนโบว์ตกแต่ง -->
+                            <circle cx="75" cy="122" r="3" fill="#ff6b6b"/>
+                            <circle cx="105" cy="125" r="3" fill="#ffd43b"/>
+                            <circle cx="135" cy="122" r="3" fill="#69db7c"/>
+                            <circle cx="165" cy="125" r="3" fill="#4dabf7"/>
+
+                            <circle cx="60" cy="172" r="3.5" fill="#f06595"/>
+                            <circle cx="95" cy="175" r="3.5" fill="#ffd43b"/>
+                            <circle cx="145" cy="175" r="3.5" fill="#69db7c"/>
+                            <circle cx="180" cy="172" r="3.5" fill="#f06595"/>
+
+                            <!-- ป้ายเลข 23 บนเค้ก -->
+                            <rect x="96" y="148" width="48" height="26" rx="8" fill="#ffffff" stroke="#f06595" stroke-width="2"/>
+                            <text x="120" y="166" text-anchor="middle" font-size="16" font-weight="bold" fill="#d6336c">23</text>
+
+                            <!-- เทียนซ้าย -->
+                            <rect x="92" y="54" width="10" height="36" rx="4" fill="#fff" stroke="#f783ac" stroke-width="1.5"/>
+                            <line x1="92" y1="64" x2="102" y2="68" stroke="#f783ac" stroke-width="2"/>
+                            <line x1="92" y1="76" x2="102" y2="80" stroke="#f783ac" stroke-width="2"/>
+
+                            <!-- เทียนขวา -->
+                            <rect x="138" y="54" width="10" height="36" rx="4" fill="#fff" stroke="#f783ac" stroke-width="1.5"/>
+                            <line x1="138" y1="64" x2="148" y2="68" stroke="#f783ac" stroke-width="2"/>
+                            <line x1="138" y1="76" x2="148" y2="80" stroke="#f783ac" stroke-width="2"/>
+
+                            <!-- เปลวไฟเทียน (จะหายไปเมื่อเป่า) -->
+                            <g id="candle-flames">
+                                <!-- เปลวซ้าย -->
+                                <path class="flame" d="M97 26 C90 38 91 48 97 50 C103 48 104 38 97 26 Z" fill="#ff922b"/>
+                                <path class="flame" d="M97 33 C93 40 94 47 97 48 C100 47 101 40 97 33 Z" fill="#ffe066"/>
+                                <!-- เปลวขวา -->
+                                <path class="flame" d="M143 26 C136 38 137 48 143 50 C149 48 150 38 143 26 Z" fill="#ff922b"/>
+                                <path class="flame" d="M143 33 C139 40 140 47 143 48 C146 47 147 40 143 33 Z" fill="#ffe066"/>
+                            </g>
+
+                            <!-- ควันจางๆ หลังเป่าเทียน -->
+                            <g id="candle-smoke" class="hidden">
+                                <circle cx="97" cy="42" r="4" fill="#ced4da" class="smoke"/>
+                                <circle cx="143" cy="42" r="4" fill="#ced4da" class="smoke"/>
+                            </g>
+                        </svg>
+                    </div>
+
+                    <!-- ปุ่มเป่าเทียน -->
+                    <div id="blow-btn-wrapper" class="mb-4">
+                        <button onclick="blowCandle()" class="btn-cute px-8 py-3 rounded-full font-bold text-base inline-flex items-center gap-2 animate-bounce">
+                            <span>เป่าเทียน 🎂</span>
+                        </button>
+                    </div>
+
+                    <!-- การ์ดคำอวยพร (แสดงหลังจากเป่าเทียนแล้ว) -->
+                    <div id="birthday-wish-card" class="hidden text-left bg-gradient-to-br from-pink-50 via-white to-rose-50 border-2 border-pink-200 rounded-2xl p-4 sm:p-5 shadow-inner mb-4 animate-[popIn_0.6s_ease]">
+                        <div class="flex items-center gap-2 mb-2 text-pink-600 font-bold text-sm">
+                            <span>💌</span>
+                            <span>ถึงพี่หมิงคนเก่งของหนู...</span>
+                        </div>
+                        <p class="text-gray-700 text-sm sm:text-[15px] leading-relaxed font-medium">
+                            Happy birthday 🎂🎉 นะคะพี่หมิง อายุ 23 แล้ว ขอให้มีความสุขถึงเราจะเป็นประสาทกันบ่อย แต่อยากให้พี่ คนรอบข้าง หรืออะไรๆรอบกายเป็นความสุขให้พี่ มีแต่คนหวังดีนะคะ หนูไม่มีของจะให้เลย ยังไม่มีตัง แต่ถ้ามีตังเมื่อไหร่อยากซื้อให้ และจะซื้อให้แน่นอน ให้พี่ปลอดภัยในทุกภารกิจ สุขภาพแข็งแรงๆ แล้วค่อยมากินเค้กเป่าเทียนวันเกิดด้วยกัน ตอนที่พี่ได้ลาแล้วได้มาหาหนู รักพี่นะคะ
+                        </p>
+                    </div>
+
+                    <!-- ปุ่มจุดพลุเพิ่ม & เล่นอีกครั้ง -->
+                    <div id="celebrate-controls" class="hidden flex flex-col sm:flex-row gap-2.5">
+                        <button onclick="launchFireworks()" class="btn-cute flex-1 py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-1.5">
+                            <span>จุดพลุฉลองอีก!</span>
+                            <span>🎆🎉</span>
+                        </button>
+                        <button onclick="goToStage(1)" class="py-3 px-4 rounded-2xl bg-pink-100 hover:bg-pink-200 text-pink-600 font-bold text-sm transition">
+                            เล่นใหม่อีกครั้ง ↺
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function blowCandle() {
+            if (candleBlown) return;
+            candleBlown = true;
+            playSound('celebrate');
+
+            // ดับไฟเทียนและแสดงควัน
+            document.getElementById('candle-flames').classList.add('hidden');
+            document.getElementById('candle-smoke').classList.remove('hidden');
+            document.getElementById('blow-btn-wrapper').classList.add('hidden');
+            document.getElementById('cake-instruction').textContent = "เย้! สุขสันต์วันเกิดนะคะพี่หมิง 💖✨";
+
+            // แสดงการ์ดอวยพรและปุ่มควบคุม
+            document.getElementById('birthday-wish-card').classList.remove('hidden');
+            document.getElementById('celebrate-controls').classList.remove('hidden');
+
+            // จุดพลุฉลองเต็มหน้าจอ
+            launchFireworks();
+        }
+
+        function launchFireworks() {
+            playSound('celebrate');
+            if (typeof confetti !== 'function') return;
+
+            const duration = 2800;
+            const end = Date.now() + duration;
+            const colors = ['#ff6b6b', '#f06595', '#faa2c1', '#ffd43b', '#ffffff'];
+
+            (function frame() {
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 65,
+                    origin: { x: 0, y: 0.7 },
+                    colors: colors
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 65,
+                    origin: { x: 1, y: 0.7 },
+                    colors: colors
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+
+            // พลุระเบิดตรงกลาง
+            confetti({
+                particleCount: 80,
+                spread: 100,
+                origin: { y: 0.55 },
+                colors: colors
+            });
+        }
+
+        // เริ่มต้นทำงานเมื่อโหลดหน้าเว็บ
+        window.onload = function() {
+            createFloatingHearts();
+            renderStage();
+        };
+    </script>
+</body>
+</html>
